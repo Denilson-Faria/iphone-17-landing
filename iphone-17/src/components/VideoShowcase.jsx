@@ -18,14 +18,41 @@ function VideoShowcase() {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
-  // Suas 5 fotos
+  
+  const videos = [
+    { src: '/videos/idosa.mp4', title: 'Modo Retrato Cinemático' },
+   
+  ];
+
+ 
   const galleryImages = [
-    '/img/neve.webp',
-    '/img/trem.webp', 
-    '/img/ruas.webp',
-    '/img/predio.webp',
-    '/img/bosque.webp'
+    { 
+      src: '/img/neve.webp',
+      title: 'Clareza. Mesmo na neve.',
+      specs: 'Câmera Principal 48MP • f/1.78 • Estabilização Óptica'
+    },
+    { 
+      src: '/img/trem.webp',
+      title: 'Zoom Tetraprismático 5x',
+      specs: 'Teleobjetiva 12MP • f/2.8 • Foco em Movimento'
+    },
+    { 
+      src: '/img/bosque.webp',
+      title: 'Detalhes. De perto.',
+      specs: 'Ultra Wide 48MP • f/2.2 • Modo Macro Avançado'
+    },
+    { 
+      src: '/img/predio.webp',
+      title: 'Fotografia Computacional',
+      specs: 'Smart HDR 5 • Deep Fusion • Processamento A18 Pro'
+    },
+    { 
+      src: '/img/selfie.jpg',
+      title: 'Retratos. Perfeitos.',
+      specs: 'Câmera Frontal 12MP • f/1.9 • LiDAR Depth Mapping'
+    }
   ];
 
   const nextImage = () => {
@@ -34,6 +61,14 @@ function VideoShowcase() {
 
   const prevImage = () => {
     setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  };
+
+  const nextVideo = () => {
+    setCurrentVideoIndex((prev) => (prev + 1) % videos.length);
+  };
+
+  const prevVideo = () => {
+    setCurrentVideoIndex((prev) => (prev - 1 + videos.length) % videos.length);
   };
 
   return (
@@ -152,17 +187,56 @@ function VideoShowcase() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
             </svg>
           </button>
+
+          {/* Navigation Arrows */}
+          <button 
+            onClick={prevVideo}
+            className="absolute left-6 text-white hover:text-orange-400 transition-colors hover:scale-110 z-10"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-12 h-12">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+
+          <button 
+            onClick={nextVideo}
+            className="absolute right-6 text-white hover:text-orange-400 transition-colors hover:scale-110 z-10"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-12 h-12">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
           
-          <div className="w-full max-w-5xl px-6 animate-scaleIn">
+          <div className="w-full max-w-5xl px-20 animate-scaleIn">
             <video 
+              key={currentVideoIndex}
               controls 
               autoPlay
               className="w-full rounded-2xl shadow-2xl"
             >
-              {/* Vídeo da câmera em ação */}
-              <source src="/videos/idosa.mp4" type="video/mp4" />
+              <source src={videos[currentVideoIndex].src} type="video/mp4" />
             </video>
-            <p className="text-center text-white mt-6 text-lg">iPhone 17 Pro - Modo Retrato Cinematográfico</p>
+            <div className="text-center mt-6">
+              <p className="text-white text-lg mb-2">iPhone 17 Pro - {videos[currentVideoIndex].title}</p>
+              <p className="text-gray-400">{currentVideoIndex + 1} / {videos.length}</p>
+            </div>
+
+            {/* Video Thumbnails */}
+            <div className="flex gap-3 justify-center mt-6">
+              {videos.map((video, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentVideoIndex(index)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    index === currentVideoIndex 
+                      ? 'bg-orange-500 text-white' 
+                      : 'bg-white/10 text-white hover:bg-white/20'
+                  }`}
+                >
+                  Vídeo {index + 1}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -201,13 +275,14 @@ function VideoShowcase() {
           {/* Image Display */}
           <div className="w-full max-w-6xl px-20 animate-scaleIn">
             <img 
-              src={galleryImages[currentImageIndex]} 
-              alt={`Foto ${currentImageIndex + 1}`}
+              src={galleryImages[currentImageIndex].src} 
+              alt={galleryImages[currentImageIndex].title}
               className="w-full h-auto max-h-[80vh] object-contain rounded-2xl shadow-2xl"
             />
             <div className="text-center mt-6">
-              <p className="text-white text-lg mb-2">Capturada com iPhone 17 Pro</p>
-              <p className="text-gray-400">{currentImageIndex + 1} / {galleryImages.length}</p>
+              <p className="text-white text-xl font-semibold mb-1">{galleryImages[currentImageIndex].title}</p>
+              <p className="text-gray-400 text-sm mb-2">{galleryImages[currentImageIndex].specs}</p>
+              <p className="text-gray-500 text-xs">{currentImageIndex + 1} / {galleryImages.length}</p>
             </div>
 
             {/* Thumbnail Navigation */}
@@ -223,8 +298,8 @@ function VideoShowcase() {
                   }`}
                 >
                   <img 
-                    src={img} 
-                    alt={`Thumbnail ${index + 1}`}
+                    src={img.src} 
+                    alt={img.title}
                     className="w-full h-full object-cover"
                   />
                 </button>
@@ -278,11 +353,4 @@ function VideoShowcase() {
   );
 }
 
-// Demo App
-export default function App() {
-  return (
-    <div className="bg-black">
-      <VideoShowcase />
-    </div>
-  );
-}
+export default VideoShowcase;
