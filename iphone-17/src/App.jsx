@@ -4,6 +4,8 @@ import Intro from './components/Intro'
 import Highlights from './components/Highlights'
 import Colors from './components/Colors'
 import Footer from './components/Footer'
+import VideoShowcase from './components/VideoShowcase'
+import Comparison from './components/Comparison'
 
 function App() {
   
@@ -12,9 +14,11 @@ function App() {
     <div>
       <NavBar/>
       <Hero/>
+      <VideoShowcase/>
       <Intro/>
       <Highlights/>
       <Colors/>
+      <Comparison/>
       <Footer/>
     </div>
   )
